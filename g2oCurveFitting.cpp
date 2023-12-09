@@ -30,9 +30,9 @@ public:
   }
 
   // 存盘和读盘：留空
-  virtual bool read(istream &in) {}
+  virtual bool read(istream &in) { return 1;}
 
-  virtual bool write(ostream &out) const {}
+  virtual bool write(ostream &out) const { return 1;}
 };
 
 // 误差模型 模板参数：观测值维度，类型，连接顶点类型
@@ -57,11 +57,11 @@ public:
     _jacobianOplusXi[0] = -_x * _x * y;
     _jacobianOplusXi[1] = -_x * y;
     _jacobianOplusXi[2] = -y;
-  }
+  } 
 
-  virtual bool read(istream &in) {}
+  virtual bool read(istream &in) { return 1;}
 
-  virtual bool write(ostream &out) const {}
+  virtual bool write(ostream &out) const { return 1;}
 
 public:
   double _x;  // x 值， y 值为 _measurement
@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
 
   // 梯度下降方法，可以从GN, LM, DogLeg 中选
   auto solver = new g2o::OptimizationAlgorithmGaussNewton(
-    g2o::make_unique<BlockSolverType>(g2o::make_unique<LinearSolverType>()));
+    std::make_unique<BlockSolverType>(std::make_unique<LinearSolverType>()));
   g2o::SparseOptimizer optimizer;     // 图模型
   optimizer.setAlgorithm(solver);   // 设置求解器
   optimizer.setVerbose(true);       // 打开调试输出
@@ -123,4 +123,6 @@ int main(int argc, char **argv) {
   cout << "estimated model: " << abc_estimate.transpose() << endl;
 
   return 0;
+
+
 }
